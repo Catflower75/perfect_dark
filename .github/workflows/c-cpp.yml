@@ -314,17 +314,20 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          mkdir ci-release
-          pushd ci-artifacts
-          tar czf ../ci-release/pd-i686-linux.tar.gz pd-i686-linux
-          tar czf ../ci-release/pd-x86_64-linux.tar.gz pd-x86_64-linux
-          tar cJf ../ci-release/pd-x86_64-osx.tar.xz pd-x86_64-osx
-          tar cJf ../ci-release/pd-arm64-osx.tar.xz pd-arm64-osx
-          zip -r ../ci-release/pd-i686-windows.zip pd-i686-windows
-          zip -r ../ci-release/pd-x86_64-windows.zip pd-x86_64-windows
-          zip -r ../ci-release/pd-arm64-nswitch.zip pd-arm64-nswitch
-          mv io.github.fgsfdsfgs.perfect_dark.flatpak/io.github.fgsfdsfgs.perfect_dark.flatpak ../ci-release/
-          popd
-          git tag --force ci-dev-build port
-          git push --force origin ci-dev-build
-          gh release upload --clobber ci-dev-build ci-release/*
+         mkdir ci-release
+         pushd ci-artifacts
+         tar czf ../ci-release/pd-i686-linux.tar.gz pd-i686-linux
+         tar czf ../ci-release/pd-x86_64-linux.tar.gz pd-x86_64-linux
+         tar cJf ../ci-release/pd-x86_64-osx.tar.xz pd-x86_64-osx
+         tar cJf ../ci-release/pd-arm64-osx.tar.xz pd-arm64-osx
+         zip -r ../ci-release/pd-i686-windows.zip pd-i686-windows
+         zip -r ../ci-release/pd-x86_64-windows.zip pd-x86_64-windows
+         zip -r ../ci-release/pd-arm64-nswitch.zip pd-arm64-nswitch
+         mv io.github.fgsfdsfgs.perfect_dark.flatpak/io.github.fgsfdsfgs.perfect_dark.flatpak ../ci-release/
+         popd
+         git tag --force ci-dev-build port
+         git push --force origin ci-dev-build
+         # Create the release if it doesn't exist
+         gh release create ci-dev-build --notes "Automated dev build" || echo "Release already exists"
+         # Upload artifacts
+         gh release upload --clobber ci-dev-build ci-release/*
